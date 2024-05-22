@@ -95,7 +95,7 @@ for i in range(MAX_ITEMS):
     placeholder.write("Searching...")
     placeholders.append(placeholder)
 
-def search_wikipedia(query, limit=3):
+def search_wikipedia(query, limit):
     wikipedia.set_lang("en")
     search_results = wikipedia.search(query, results=limit)
     results = []
@@ -119,7 +119,7 @@ def generate_arctic_response(prompt):
                                   input={"prompt": prompt, "temperature": temperature, "top_p": top_p}):
         yield str(event)
 
-items = search_wikipedia(user_query, limit=10)
+items = search_wikipedia(user_query, limit=3)
 items = aggregate(items)[:MAX_ITEMS]
 
 header.write(f"That's what I found about: _{user_query}_. **Summarizing results...**")
