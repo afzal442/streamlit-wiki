@@ -1,5 +1,6 @@
 import streamlit as st
 import replicate
+import wikipedia
 import os
 from transformers import AutoTokenizer
 
@@ -94,14 +95,17 @@ for i in range(MAX_ITEMS):
     placeholder.write("Searching...")
     placeholders.append(placeholder)
 
-def search_wikipedia(query, limit=10):
-    # This is a placeholder for the actual Wikipedia search logic.
-    # You need to implement the actual search functionality here.
-    # For demonstration, we're returning a mock result.
-    return [
-        {"url": f"https://en.wikipedia.org/wiki/{query}_result_{i}", "title": f"{query} Result {i}", "text": f"Text for {query} result {i}"} 
-        for i in range(limit)
-    ]
+def search_wikipedia(query, limit=3):
+    wikipedia.set_lang("en")
+    search_results = wikipedia.search(query, results=limit)
+    results = []
+    for title in search_results:
+        try:
+            page = wikipedia.page(title)
+            results.append({"url": page.url, "title": page.title, "text": page.summary})
+        except wikipedia.PageError:
+            continue
+    return results
 
 # Generate a response using Snowflake Arctic
 def generate_arctic_response(prompt):
